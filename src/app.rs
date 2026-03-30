@@ -1,3 +1,4 @@
+#[derive(Clone, Copy)]
 pub enum ActiveField {
   // Left pane
   Search,
@@ -27,5 +28,33 @@ impl App {
       response_content: String::new(),
       active_field: ActiveField::Search,
     }
+  }
+  pub fn move_right(&mut self) {
+    self.active_field = match self.active_field {
+      ActiveField::Search => ActiveField::Url,
+      ActiveField::History => ActiveField::Response,
+      _ => self.active_field,
+    };
+  }
+  pub fn move_left(&mut self) {
+    self.active_field = match self.active_field {
+      ActiveField::Url => ActiveField::Search,
+      ActiveField::Response => ActiveField::History,
+      _ => self.active_field,
+    };
+  }
+  pub fn move_up(&mut self) {
+    self.active_field = match self.active_field {
+      ActiveField::History => ActiveField::Search,
+      ActiveField::Response => ActiveField::Url,
+      _ => self.active_field,
+    };
+  }
+  pub fn move_down(&mut self) {
+    self.active_field = match self.active_field {
+      ActiveField::Search => ActiveField::History,
+      ActiveField::Url => ActiveField::Response,
+      _ => self.active_field,
+    };
   }
 }
