@@ -1,1 +1,1 @@
-/Users/filipurban/Desktop/Projects/restatui/target/debug/rastatui: /Users/filipurban/Desktop/Projects/restatui/src/main.rs
+/Users/filipurban/Desktop/Projects/restatui/target/debug/rastatui: /Users/filipurban/Desktop/Projects/restatui/src/app.rs /Users/filipurban/Desktop/Projects/restatui/src/main.rs /Users/filipurban/Desktop/Projects/restatui/src/ui.rs
