@@ -1,5 +1,6 @@
 mod app;
 mod ui;
+mod components;
 
 use crate::app::{ App, ActiveField };
 use crossterm::event::{ self, Event, KeyCode, KeyEventKind, KeyModifiers };
@@ -33,21 +34,22 @@ fn run_app(terminal: &mut DefaultTerminal) -> std::io::Result<()> {
                         KeyCode::Char('q') => {
                             return Ok(());
                         }
-
-                        KeyCode::Char(c) => {
-                            if matches!(app.active_field, ActiveField::Url) {
-                                app.url_input.push(c);
-                            } else if matches!(app.active_field, ActiveField::Search) {
-                                app.search_input.push(c);
+                        KeyCode::Char(c) =>
+                            match app.active_field {
+                                ActiveField::Url => app.url_input.push(c),
+                                ActiveField::Search => app.search_input.push(c),
+                                _ => {}
                             }
-                        }
-                        KeyCode::Backspace => {
-                            if matches!(app.active_field, ActiveField::Url) {
-                                app.url_input.pop();
-                            } else if matches!(app.active_field, ActiveField::Search) {
-                                app.search_input.pop();
+                        KeyCode::Backspace =>
+                            match app.active_field {
+                                ActiveField::Url => {
+                                    app.url_input.pop();
+                                }
+                                ActiveField::Search => {
+                                    app.search_input.pop();
+                                }
+                                _ => {}
                             }
-                        }
                         _ => {}
                     }
                 }
