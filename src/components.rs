@@ -1,8 +1,9 @@
 use ratatui::{
-    layout::Rect,
-    style::{ Color, Modifier, Style },
-    widgets::{ Block, BorderType, Paragraph },
     Frame,
+    layout::{ Constraint, Layout, Rect },
+    style::{ Color, Modifier, Style },
+    text::{ Line, Span },
+    widgets::{ Block, BorderType, Paragraph },
 };
 use crate::app::{ ActiveField, App };
 
@@ -52,11 +53,51 @@ impl Component for History {
     }
 }
 
+pub struct MethodSelector;
+impl Component for MethodSelector {
+    fn render(&self, frame: &mut Frame, area: Rect, app: &App) {
+        // Only styling the text here
+        let method_color = app.http_method.get_color();
+        let is_active = matches!(app.active_field, ActiveField::Url);
+
+        let method_text = Span::styled(
+            app.http_method.as_str(),
+            Style::default()
+                .fg(method_color)
+                .add_modifier(if is_active { Modifier::BOLD } else { Modifier::empty() })
+        );
+
+        // Render the text inside the small area we gave it
+        frame.render_widget(Paragraph::new(Line::from(vec![Span::raw(" "), method_text])), area);
+    }
+}
+
 pub struct Url;
 impl Component for Url {
     fn render(&self, frame: &mut Frame, area: Rect, app: &App) {
-        let active = matches!(app.active_field, ActiveField::Url);
-        TitledPane::render(frame, area, "URL", &app.url_input, active);
+        let is_active = matches!(app.active_field, ActiveField::Url);
+
+        // Create the outer block
+        let block = Block::bordered()
+            .title(" URL ")
+            .border_type(if is_active { BorderType::Thick } else { BorderType::Rounded })
+            .style(if is_active { Style::default().fg(Color::Yellow) } else { Style::default() });
+
+        // Get the area inside the borders
+        let inner_area = block.inner(area);
+        frame.render_widget(block, area);
+
+        // Split the inner area horizontally
+        let chunks = Layout::horizontal([
+            Constraint::Length(6), // Space for MethodSelector
+            Constraint::Fill(1), // Space for the URL text
+        ]).split(inner_area);
+
+        // Delegate to MethodSelector
+        MethodSelector.render(frame, chunks[0], app);
+
+        // Render the separator and URL input manually
+        frame.render_widget(Paragraph::new(app.url_input.as_str()), chunks[1]);
     }
 }
 

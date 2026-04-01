@@ -34,6 +34,13 @@ fn run_app(terminal: &mut DefaultTerminal) -> std::io::Result<()> {
                         KeyCode::Char('q') => {
                             return Ok(());
                         }
+                        KeyCode::Char(' ') => {
+                            if matches!(app.active_field, ActiveField::Url) {
+                                app.http_method.next();
+                            } else {
+                                app.search_input.push(' ');
+                            }
+                        }
                         KeyCode::Char(c) =>
                             match app.active_field {
                                 ActiveField::Url => app.url_input.push(c),

@@ -1,5 +1,5 @@
 use ratatui::{ layout::{ Constraint, Layout, Rect }, Frame };
-use crate::app::App;
+use crate::{ app::{ App } };
 use crate::components::{ Component, Search, History, Url, Response };
 
 const LEFT_SECTION_WIDTH: u16 = 60;
@@ -21,7 +21,11 @@ fn render_left_column(frame: &mut Frame, area: Rect, app: &App) {
 }
 
 fn render_right_column(frame: &mut Frame, area: Rect, app: &App) {
-    let chunks = Layout::vertical([Constraint::Length(3), Constraint::Fill(1)]).split(area);
-    Url.render(frame, chunks[0], app);
-    Response.render(frame, chunks[1], app);
+    let vertical_chunks = Layout::vertical([Constraint::Length(3), Constraint::Fill(1)]).split(
+        area
+    );
+
+    // Url now handles the MethodSelector internally
+    Url.render(frame, vertical_chunks[0], app);
+    Response.render(frame, vertical_chunks[1], app);
 }

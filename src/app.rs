@@ -6,12 +6,53 @@ pub enum ActiveField {
     Response,
 }
 
+pub enum HttpMethod {
+    GET,
+    POST,
+    PUT,
+    DELETE,
+    PATCH,
+}
+
+impl HttpMethod {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            HttpMethod::GET => "GET",
+            HttpMethod::POST => "POST",
+            HttpMethod::PUT => "PUT",
+            HttpMethod::DELETE => "DELETE",
+            HttpMethod::PATCH => "PATCH",
+        }
+    }
+
+    pub fn next(&mut self) {
+        *self = match self {
+            HttpMethod::GET => HttpMethod::POST,
+            HttpMethod::POST => HttpMethod::PUT,
+            HttpMethod::PUT => HttpMethod::DELETE,
+            HttpMethod::DELETE => HttpMethod::PATCH,
+            HttpMethod::PATCH => HttpMethod::GET,
+        };
+    }
+
+    pub fn get_color(&self) -> ratatui::style::Color {
+        match self {
+            HttpMethod::GET => ratatui::style::Color::Green,
+            HttpMethod::POST => ratatui::style::Color::Blue,
+            HttpMethod::PUT => ratatui::style::Color::Yellow,
+            HttpMethod::DELETE => ratatui::style::Color::Red,
+            HttpMethod::PATCH => ratatui::style::Color::Magenta,
+        }
+    }
+}
+
 pub struct App {
     pub search_input: String,
     pub history_selection: usize,
     pub url_input: String,
     pub response_content: String,
     pub active_field: ActiveField,
+    pub http_method: HttpMethod,
 }
 
 impl App {
@@ -22,6 +63,7 @@ impl App {
             url_input: String::new(),
             response_content: String::new(),
             active_field: ActiveField::Search,
+            http_method: HttpMethod::GET,
         }
     }
 
