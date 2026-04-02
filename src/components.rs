@@ -88,13 +88,21 @@ impl Component for Url {
         frame.render_widget(block, area);
 
         // Split the inner area horizontally
+        // TODO: Check if we can use flex here to avoid hardcoding the method selector width
         let chunks = Layout::horizontal([
-            Constraint::Length(6), // Space for MethodSelector
+            Constraint::Length(8), // Space for MethodSelector
+            Constraint::Length(1), // Space for MethodSelector
             Constraint::Fill(1), // Space for the URL text
         ]).split(inner_area);
 
         // Delegate to MethodSelector
         MethodSelector.render(frame, chunks[0], app);
+
+        // Render the separator
+        frame.render_widget(
+            Paragraph::new("|").style(Style::default().fg(Color::DarkGray)),
+            chunks[1]
+        );
 
         // Render the separator and URL input manually
         frame.render_widget(Paragraph::new(app.url_input.as_str()), chunks[1]);
